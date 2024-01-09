@@ -9,6 +9,17 @@ spec:
   selector:
     app: nginx-project
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-project-2
+spec:
+  type: NodePort
+  ports:
+    - port: 81
+  selector:
+    app: nginx-project-2
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,3 +39,24 @@ spec:
           image: nginx:latest
           ports:
             - containerPort: 80
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-project-2
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: nginx-project-2
+  template:
+    metadata:
+      labels:
+        app: nginx-project-2
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:stable-bullseye
+          ports:
+            - containerPort: 81
